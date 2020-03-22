@@ -282,8 +282,12 @@ class JUnitXmlResultHandler(xml.sax.ContentHandler):
         if tag == 'failure':
             # Failure content will be parsed in characters() callback.
             failure = Failure()
-            failure.set_message(attrs['message'])
-            failure.set_failure_type(attrs['type'])
+            # Some generator doesn't generate message
+            if attrs.__contains__('message'):
+                failure.set_message(attrs['message'])
+            # Some generator doesn't generate type
+            if attrs.__contains__('type'):
+                failure.set_failure_type(attrs['type'])
             failure.set_test_case(self.current_test_case)
             failure_class_name = failure.get_test_case().get_class_name()
             failures_with_class_name = \
